@@ -1,5 +1,6 @@
 import io
 import pandas as pd
+import ast
 from rest_framework import viewsets, views
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
@@ -12,18 +13,16 @@ from .serializers import ShoeSerializer
 from django.conf import settings
 from sqlalchemy import create_engine
 from .models import Shoe
+from django.contrib.postgres.fields import ArrayField
+import django_filters
 
 class ShoeViewSet(viewsets.ModelViewSet):
 
     __basic_fields = ('sku', 'name','details','price')
 
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated,)
-
     queryset = Shoe.objects.all()
     serializer_class = ShoeSerializer
     filter_backends = (filters.DjangoFilterBackend, SearchFilter, OrderingFilter)
-
     filter_fields = __basic_fields
     search_fields = __basic_fields
 
@@ -31,12 +30,7 @@ class CsvView(views.APIView):
 
     parser_classes = (MultiPartParser,)
 
-    # authentication_classes = (SessionAuthentication, BasicAuthentication)
-    # permission_classes = (IsAuthenticated,)
-
     def post(self, request, format=None):
-
-        import csv
 
         if 'file' not in request.data:
             raise ParseError("Empty content")
@@ -46,6 +40,7 @@ class CsvView(views.APIView):
         df=pd.read_csv(data, sep=';')
         df = df.apply(self.__calculate_discount, axis=1)
         df = df.drop('promotion', axis=1)
+        df = df.apply(self.__string_list_to_list, axis=1)
 
         user = settings.DATABASES['default']['USER']
         password = settings.DATABASES['default']['PASSWORD']
@@ -60,13 +55,15 @@ class CsvView(views.APIView):
         )
 
         engine = create_engine(database_url, echo=False)
-        import pdb; pdb.set_trace()
 
         df.to_sql(Shoe._meta.db_table, con=engine, if_exists='append', index=False)
 
         return Response(status='201')
 
     def __calculate_discount(self, line):
-        import pdb; pdb.set_trace()
         line['price'] = line['price'] - (line['price']*line['promotion']/100)
+        return line
+    
+    def __string_list_to_list(self, line):
+        line['tags'] = ast.literal_eval(line['tags'])
         return line

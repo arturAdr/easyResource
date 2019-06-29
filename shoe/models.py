@@ -7,7 +7,7 @@ class Shoe(models.Model):
 
     sku = models.CharField(max_length=100, unique=True)
     name = models.CharField(max_length=100)
-    details = models.CharField(max_length=500)
+    details = models.CharField(max_length=5000)
     informations = JSONField()
     tags = ArrayField(models.CharField(max_length=200), blank=True)
     price = models.FloatField()

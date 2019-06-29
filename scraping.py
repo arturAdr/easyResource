@@ -1,6 +1,7 @@
 import traceback, argparse, requests, shutil
 import pandas as pd
 import random
+import json
 
 from bs4 import BeautifulSoup
 
@@ -85,9 +86,9 @@ class Scraper(object):
                 'price': price,
                 'details': details,
                 'tags': tags,
-                'informations': information,
+                'informations': json.dumps(information),
                 'promotion': random.randint(0, 60),
-                'sizes': sizes
+                'sizes': json.dumps(sizes)
             }
 
         except Exception as ex:
