@@ -72,7 +72,11 @@ Então para rodar o projeto é só executar o comando:
 
 é só executar docker-compose up -d e logo em seguida executar este comando para que o 
 database seja criado: 
+
     docker exec -it postgres bin/sh
+
+    e logo em seguida executar este.
+
     PGPASSWORD=postgres psql -h postgres -p 5432  -U postgres -c "CREATE DATABASE easyResource;"
 
 ## Extra
