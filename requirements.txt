@@ -1,4 +1,7 @@
 django
 djangorestframework
 django-filter
-django-cors-headerse
+django-cors-headers
+jsonschema
+pandas
+sqlalchemy

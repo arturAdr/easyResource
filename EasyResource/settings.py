@@ -83,10 +83,10 @@ WSGI_APPLICATION = 'EasyResource.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'easyResource',
+        'NAME': 'easyresource',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': '127.0.0.1',
+        'HOST': 'postgres',
     }
 }
 

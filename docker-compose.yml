@@ -1,0 +1,42 @@
+version: '3.5'
+services:
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      - "POSTGRES_PASSWORD=postgres"
+    ports:
+      - "5432:5432"
+    networks:
+      - easyresource-network
+
+  easyResource:
+    image: arturribeiro/easyresource
+    container_name: easyresource
+    depends_on:
+      - postgres
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - easyresource-network
+
+  easyResourceFront:
+    image: arturribeiro/easyresourcefront
+    container_name: easyresourcefront
+    restart: always
+    ports:
+      - "4200:4200"
+    networks:
+      - easyresource-network
+
+networks:
+  easyresource-network:
+    driver: bridge
+
+
+
+
+      
